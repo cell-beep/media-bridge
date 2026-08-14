@@ -200,6 +200,14 @@ class ExtensionReleaseTests(unittest.TestCase):
         for filename in ("release-gates.md", "pitfalls.md", "store-review.md"):
             self.assertTrue((skill_root / "references" / filename).is_file())
 
+    def test_release_notes_match_firefox_first_scope(self):
+        notes = (PROJECT_ROOT / "docs" / "RELEASE_NOTES_0.2.2.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("Firefox desktop Manifest V3", notes)
+        self.assertIn("nested Helper", notes)
+        self.assertNotIn("Microsoft Edge Manifest V3 extension", notes)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -4,7 +4,7 @@ Release date: August 14, 2026
 
 ## Highlights
 
-- Microsoft Edge Manifest V3 extension with a compact local-download interface.
+- Firefox desktop Manifest V3 extension with a compact local-download interface.
 - Windows Helper installed per user; no Python, PowerShell, FFmpeg, or Deno setup required by the user.
 - Video downloads with selectable maximum resolution.
 - Audio extraction to MP3, M4A, or Opus.
@@ -21,10 +21,11 @@ Release date: August 14, 2026
 
 - MPL-2.0 open-source license and Soft Harbor Studio publisher identity.
 - Collected Python-package license files included in new Helper builds.
-- Field-by-field Partner Center submission sheet.
+- Firefox Add-ons listing and reviewer instructions.
 - Static product, Helper download, privacy, support, and third-party notice pages.
 - Publisher-owned six-second certification sample with video and audio.
-- Automated release-readiness checks for signing, production ID, public URLs, FFmpeg source, and screenshots.
+- Reproducible FFmpeg input metadata, corresponding-source workflow, CycloneDX SBOM, and release hashes.
+- Automated release-readiness checks for nested Helper/installer signatures, timestamps, public URLs, FFmpeg source, and screenshots.
 
 ## Privacy state
 
@@ -37,8 +38,8 @@ This release has no publisher analytics, ad network, account system, remote spon
 - Some websites or individual streams can return HTTP 403 or require authorization not available to the Helper.
 - Automatic format fallback after HTTP 403 is not yet enabled.
 - Download history, cancel controls, and retry controls are not yet included.
-- The development installer is unsigned and must not be treated as the public production installer.
+- The Windows installer is not public until both its nested Helper and the outer installer have valid timestamped Authenticode signatures.
 
 ## Distribution blockers
 
-Before public release, complete Windows code signing, production extension-ID registration, HTTPS hosting, public privacy/support pages, and third-party license packaging described in [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md).
+Before public binary release, complete Windows code signing, run the clean-machine install/uninstall matrix, publish the exact FFmpeg corresponding-source bundle, and attach final checksums described in [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md). The Firefox extension ID, HTTPS product/privacy/support pages, public repository, and release automation are already prepared.
