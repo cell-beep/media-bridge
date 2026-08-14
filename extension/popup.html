@@ -1,0 +1,98 @@
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+     License, v. 2.0. If a copy of the MPL was not distributed with this
+     file, You can obtain one at https://mozilla.org/MPL/2.0/. -->
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Media Bridge</title>
+    <link rel="stylesheet" href="popup.css">
+  </head>
+  <body>
+    <main>
+      <header>
+        <div>
+          <p class="eyebrow">LOCAL MEDIA TOOL</p>
+          <h1>Media Bridge</h1>
+        </div>
+        <span id="backend-status" class="status status-offline">Offline</span>
+      </header>
+
+      <label for="media-url">Media URL</label>
+      <div class="url-row">
+        <input id="media-url" type="url" placeholder="https://…" spellcheck="false">
+        <button id="probe-button" class="secondary" type="button">Inspect</button>
+      </div>
+
+      <section id="media-card" class="media-card hidden" aria-live="polite">
+        <img id="thumbnail" alt="" class="hidden">
+        <div>
+          <strong id="media-title"></strong>
+          <p id="media-details"></p>
+        </div>
+      </section>
+
+      <div class="options-grid">
+        <div>
+          <label for="mode">Download</label>
+          <select id="mode">
+            <option value="video">Video + audio</option>
+            <option value="audio">Audio only</option>
+          </select>
+        </div>
+        <div id="quality-wrap">
+          <label for="quality">Maximum quality</label>
+          <select id="quality">
+            <option value="2160">2160p</option>
+            <option value="1440">1440p</option>
+            <option value="1080" selected>1080p</option>
+            <option value="720">720p</option>
+            <option value="480">480p</option>
+          </select>
+        </div>
+        <div id="audio-format-wrap" class="hidden">
+          <label for="audio-format">Audio format</label>
+          <select id="audio-format">
+            <option value="mp3">MP3</option>
+            <option value="m4a">M4A</option>
+            <option value="opus">Opus</option>
+          </select>
+        </div>
+      </div>
+
+      <label class="rights-check">
+        <input id="rights-confirmation" type="checkbox">
+        <span>I own this media or have permission, and the website permits downloading it.</span>
+      </label>
+
+      <button id="download-button" class="primary" type="button" disabled>
+        Download
+      </button>
+      <button id="open-folder-button" class="folder-button hidden" type="button">
+        Open downloads folder
+      </button>
+
+      <section id="job-panel" class="job-panel hidden" aria-live="polite">
+        <div class="progress-track"><div id="progress-bar"></div></div>
+        <p id="job-message"></p>
+      </section>
+
+      <p id="message" class="message" aria-live="polite"></p>
+      <aside id="sponsor-card" class="sponsor-card hidden" aria-label="Sponsor">
+        <button id="dismiss-sponsor" class="sponsor-dismiss" type="button" aria-label="Hide sponsor">×</button>
+        <span id="sponsor-label" class="sponsor-label"></span>
+        <strong id="sponsor-title"></strong>
+        <p id="sponsor-text"></p>
+        <button id="sponsor-action" class="sponsor-action hidden" type="button"></button>
+      </aside>
+      <footer>
+        <span>Authorized downloads are processed locally on this computer.</span>
+        <span id="app-version"></span>
+      </footer>
+    </main>
+    <script src="config.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>

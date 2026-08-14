@@ -1,0 +1,23 @@
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+     License, v. 2.0. If a copy of the MPL was not distributed with this
+     file, You can obtain one at https://mozilla.org/MPL/2.0/. -->
+
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Media Bridge Privacy Policy</title><link rel="stylesheet" href="styles.css"></head>
+<body>
+  <header><nav class="wrap"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Media Bridge</a><a href="download.html">Install Helper</a><a href="support.html">Support</a></nav></header>
+  <main class="wrap document">
+    <div class="eyebrow">Effective August 14, 2026</div><h1>Privacy Policy</h1>
+    <p class="lead">Media Bridge processes authorized media downloads on the user's Windows computer. Version {{VERSION}} has no publisher analytics, behavioral advertising, account system, or cloud media processing.</p>
+    <section><h2>Information processed</h2><p>When the user opens Media Bridge, the extension can read the active tab URL and place it in an editable field. The extension sends the submitted URL, returned title, duration and thumbnail, format and quality choices, download action, local progress, and errors through Native Messaging to the locally installed Helper for the requested operation.</p><p>Mozilla classifies this local transfer as data transmission outside the extension. Soft Harbor Studio does not receive this information. Media Bridge does not access browser cookies, passwords, payment information, or general browsing history.</p></section>
+    <section><h2>Network communication</h2><p>The Helper connects directly to the submitted website and its associated content-delivery services. Those services receive ordinary network information, including the user's IP address, under their own privacy policies. Media files are not routed through Soft Harbor Studio servers.</p></section>
+    <section><h2>Local storage and retention</h2><p>Preferences remain in local browser-extension storage. Small download-job records remain under <code>%LOCALAPPDATA%\Media Bridge\jobs</code>. Completed files are saved under <code>%USERPROFILE%\Downloads\MediaBridge</code> by default. Soft Harbor Studio does not receive or retain these records.</p></section>
+    <section><h2>Sharing and sale</h2><p>Soft Harbor Studio does not sell locally processed URLs, media metadata, job records, or files and does not share them with advertisers or data brokers.</p></section>
+    <section><h2>User controls</h2><p>Users can edit or clear a URL before inspection, remove downloaded files, uninstall the extension and Helper, and delete remaining local Media Bridge data.</p></section>
+    <section><h2>Security</h2><p>The extension communicates with the installed Helper through browser Native Messaging. The Helper rejects credential-bearing URLs and local or private-network destinations.</p></section>
+    <section><h2>Changes and contact</h2><p>This page will be updated before any material data-practice change is released. Privacy questions: <a href="mailto:{{SUPPORT_EMAIL}}">{{SUPPORT_EMAIL}}</a>.</p></section>
+  </main>
+  <footer><div class="wrap">© 2026 Soft Harbor Studio</div></footer>
+</body>
+</html>

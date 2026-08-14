@@ -1,0 +1,21 @@
+Media Bridge first-party software license notice
+
+Copyright (c) 2026 Soft Harbor Studio.
+
+Media Bridge first-party source code, browser-extension code, Helper code,
+installer scripts, documentation, and original artwork are made available
+under the Mozilla Public License Version 2.0 (MPL-2.0). The complete license
+text is in the LICENSE file distributed with the source code and is available
+at https://mozilla.org/MPL/2.0/.
+
+Third-party components included with Media Bridge remain governed by their own
+licenses. Those licenses and notices take precedence for the corresponding
+components and are identified in THIRD-PARTY-NOTICES.md and the accompanying
+licenses directory.
+
+"Media Bridge" and "Soft Harbor Studio" are project identifiers. The MPL-2.0
+does not grant trademark rights. See TRADEMARKS.md in the source repository.
+
+Media Bridge does not grant permission to download media. The user is
+responsible for ensuring that each download is authorized by the rights holder,
+permitted by the relevant website, and lawful in the user's jurisdiction.

@@ -1,0 +1,33 @@
+.venv/
+.uv-cache/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+backend/.coverage
+backend/htmlcov/
+.tools/
+.test-downloads/
+.test-state-*/
+.build/
+dist/
+tmp/
+
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+*.pfx
+*.p12
+*.pem
+*.key
+*.cer
+*.crt
+
+# Release artifacts belong in GitHub Releases, not Git history
+*.exe
+*.msi
+*.msix
+*.appx
+*.appxbundle
+*.sig
+*.log

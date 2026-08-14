@@ -1,0 +1,21 @@
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+     License, v. 2.0. If a copy of the MPL was not distributed with this
+     file, You can obtain one at https://mozilla.org/MPL/2.0/. -->
+
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Install Media Bridge Helper</title><link rel="stylesheet" href="styles.css"></head>
+<body>
+  <header><nav class="wrap"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Media Bridge</a><a href="privacy.html">Privacy</a><a href="support.html">Support</a></nav></header>
+  <main class="wrap document">
+    <div class="eyebrow">Windows companion</div><h1>Install Media Bridge Helper</h1>
+    <p class="lead">The Helper performs authorized downloads, stream merging, and audio conversion locally. Browser stores do not install native companion applications, so this one small Windows installation is required.</p>
+    <div class="notice"><p>Version {{VERSION}} · Windows 10 or later · {{SIGNING_STATUS}}</p></div>
+    <p><a class="button" href="files/MediaBridgeHelper-Setup-{{VERSION}}.exe">Download Helper</a></p>
+    <section><h2>Verify the download</h2><p>SHA-256:</p><p><code>{{INSTALLER_SHA256}}</code></p></section>
+    <section><h2>Install</h2><ol><li>Install the extension from the supported browser store.</li><li>Download and run the Helper installer.</li><li>Restart the browser.</li><li>Open Media Bridge and confirm that its status reads <strong>Ready</strong>.</li></ol><p>No Python, PowerShell, FFmpeg, Deno, or administrator account is required.</p></section>
+    <section><h2>Remove</h2><p>Remove the extension from the browser, then uninstall <strong>Media Bridge Helper</strong> from Windows Installed apps. See the <a href="support.html">support guide</a> for optional data cleanup.</p></section>
+  </main>
+  <footer><div class="wrap">© 2026 Soft Harbor Studio · <a href="third-party.html">Third-party notices and source</a></div></footer>
+</body>
+</html>

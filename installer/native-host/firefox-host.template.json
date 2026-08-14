@@ -1,0 +1,9 @@
+{
+  "name": "com.media_bridge.helper",
+  "description": "Media Bridge local download helper",
+  "path": "__HELPER_PATH__",
+  "type": "stdio",
+  "allowed_extensions": [
+    "__EXTENSION_ID__"
+  ]
+}

@@ -1,0 +1,33 @@
+[project]
+name = "media-bridge"
+version = "0.2.2"
+description = "Local downloader backend for the Media Bridge browser extension"
+requires-python = ">=3.12"
+license = "MPL-2.0"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn>=0.34",
+    "yt-dlp[default,deno]",
+]
+
+[project.urls]
+Homepage = "https://github.com/cell-beep/media-bridge"
+Repository = "https://github.com/cell-beep/media-bridge"
+Issues = "https://github.com/cell-beep/media-bridge/issues"
+
+[project.scripts]
+media-bridge = "media_bridge.__main__:main"
+media-bridge-native = "media_bridge.native_host:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/media_bridge"]
+
+[dependency-groups]
+dev = [
+    "pillow>=12.3.0",
+    "pyinstaller>=6.22.0",
+]

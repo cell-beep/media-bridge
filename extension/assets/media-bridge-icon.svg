@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="76" y1="54" x2="438" y2="458" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#18232A"/>
+      <stop offset="1" stop-color="#080B0F"/>
+    </linearGradient>
+    <linearGradient id="mint" x1="142" y1="142" x2="377" y2="378" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8AFFDB"/>
+      <stop offset="1" stop-color="#45DDAE"/>
+    </linearGradient>
+  </defs>
+  <rect x="24" y="24" width="464" height="464" rx="128" fill="url(#bg)"/>
+  <rect x="25" y="25" width="462" height="462" rx="127" fill="none" stroke="#FFFFFF" stroke-opacity=".10" stroke-width="2"/>
+  <path d="M126 298C153 213 204 171 256 171C308 171 359 213 386 298" fill="none" stroke="url(#mint)" stroke-width="38" stroke-linecap="round"/>
+  <path d="M137 298H375" fill="none" stroke="#F5F8F7" stroke-width="30" stroke-linecap="round"/>
+  <path d="M166 294V355M346 294V355" fill="none" stroke="#F5F8F7" stroke-width="24" stroke-linecap="round"/>
+  <path d="M137 363H375" fill="none" stroke="url(#mint)" stroke-width="28" stroke-linecap="round"/>
+  <path d="M256 108V252M209 211L256 258L303 211" fill="none" stroke="#F5F8F7" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

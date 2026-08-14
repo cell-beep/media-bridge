@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="560" viewBox="0 0 1400 560">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1400" y2="560" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1B3035"/>
+      <stop offset=".55" stop-color="#0D1418"/>
+      <stop offset="1" stop-color="#07090D"/>
+    </linearGradient>
+    <linearGradient id="mint" x1="172" y1="130" x2="472" y2="438" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8AFFDB"/>
+      <stop offset="1" stop-color="#45DDAE"/>
+    </linearGradient>
+  </defs>
+  <rect width="1400" height="560" fill="url(#bg)"/>
+  <circle cx="320" cy="280" r="185" fill="#091015" stroke="#FFFFFF" stroke-opacity=".08" stroke-width="2"/>
+  <path d="M195 312C227 207 275 166 320 166C365 166 413 207 445 312" fill="none" stroke="url(#mint)" stroke-width="34" stroke-linecap="round"/>
+  <path d="M205 312H435M232 312V378M408 312V378M205 390H435" fill="none" stroke="#F5F8F7" stroke-width="25" stroke-linecap="round"/>
+  <path d="M320 95V260M276 220L320 264L364 220" fill="none" stroke="#F5F8F7" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="600" y="250" fill="#F5F8F7" font-family="Segoe UI, Arial, sans-serif" font-size="78" font-weight="700">Media Bridge</text>
+  <text x="605" y="307" fill="#8AFFDB" font-family="Segoe UI, Arial, sans-serif" font-size="23" font-weight="700" letter-spacing="4">LOCAL. SIMPLE. YOURS.</text>
+  <text x="605" y="368" fill="#AAB4B7" font-family="Segoe UI, Arial, sans-serif" font-size="26">Save permitted video and audio directly on your computer.</text>
+</svg>
