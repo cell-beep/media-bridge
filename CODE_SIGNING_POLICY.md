@@ -1,8 +1,15 @@
 # Code-Signing Policy
 
-Free code signing for this open-source project is planned to be provided by
-[SignPath.io](https://signpath.io/) with a certificate provided by the
-[SignPath Foundation](https://signpath.org/).
+## Current status
+
+Media Bridge is preparing an application for the SignPath Foundation open-source
+program. The current development installer is unsigned and is not presented as
+a public production release.
+
+After acceptance, the release page will use the required statement:
+**Free code signing provided by [SignPath.io](https://signpath.io/), certificate
+by [SignPath Foundation](https://signpath.org/).** Acceptance is not assumed or
+guaranteed by this policy.
 
 ## Covered artifacts
 
@@ -35,3 +42,11 @@ Before approval, a release must:
 7. publish checksums alongside the signed installer.
 
 Signing credentials and private keys must never be stored in this repository.
+
+## Privacy statement
+
+Media Bridge will not transfer information to other networked systems unless
+specifically requested by the user operating it. A download request necessarily
+connects the local Helper to the media URL selected by the user. Media Bridge
+does not upload media to a publisher-operated cloud service. See the project
+[privacy policy](docs/PRIVACY_POLICY.md) for the complete disclosure.

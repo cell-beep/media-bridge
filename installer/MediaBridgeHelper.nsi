@@ -8,7 +8,9 @@ SetCompressor /SOLID zlib
 !include "MUI2.nsh"
 
 !define APP_NAME "Media Bridge Helper"
+!ifndef APP_VERSION
 !define APP_VERSION "0.2.2"
+!endif
 !define NATIVE_HOST "com.media_bridge.helper"
 
 Name "${APP_NAME}"
@@ -31,12 +33,16 @@ Section "Media Bridge Helper" SEC_MAIN
   SetShellVarContext current
   SetOutPath "$INSTDIR"
   File /r "..\dist\helper\MediaBridgeHelper\*"
+!ifndef MB_FIREFOX_ONLY
   File /oname=${NATIVE_HOST}.chromium.json "..\.build\installer\${NATIVE_HOST}.chromium.json"
+!endif
   File /oname=${NATIVE_HOST}.firefox.json "..\.build\installer\${NATIVE_HOST}.firefox.json"
 
   SetRegView 64
+!ifndef MB_FIREFOX_ONLY
   WriteRegStr HKCU "Software\Google\Chrome\NativeMessagingHosts\${NATIVE_HOST}" "" "$INSTDIR\${NATIVE_HOST}.chromium.json"
   WriteRegStr HKCU "Software\Microsoft\Edge\NativeMessagingHosts\${NATIVE_HOST}" "" "$INSTDIR\${NATIVE_HOST}.chromium.json"
+!endif
   WriteRegStr HKCU "Software\Mozilla\NativeMessagingHosts\${NATIVE_HOST}" "" "$INSTDIR\${NATIVE_HOST}.firefox.json"
   WriteRegStr HKCU "Software\Media Bridge\Helper" "InstallDir" "$INSTDIR"
   WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\MediaBridgeHelper" "DisplayName" "${APP_NAME}"
@@ -52,8 +58,10 @@ SectionEnd
 Section "Uninstall"
   SetShellVarContext current
   SetRegView 64
+!ifndef MB_FIREFOX_ONLY
   DeleteRegKey HKCU "Software\Google\Chrome\NativeMessagingHosts\${NATIVE_HOST}"
   DeleteRegKey HKCU "Software\Microsoft\Edge\NativeMessagingHosts\${NATIVE_HOST}"
+!endif
   DeleteRegKey HKCU "Software\Mozilla\NativeMessagingHosts\${NATIVE_HOST}"
   DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\MediaBridgeHelper"
   DeleteRegKey HKCU "Software\Media Bridge\Helper"

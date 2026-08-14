@@ -86,13 +86,14 @@ cd backend
 uv sync
 cd ..
 ./scripts/build-helper.ps1 -Clean
-./scripts/build-installer.ps1
+./scripts/build-installer.ps1 -FirefoxOnly
 ```
 
 The installer is created at
-`dist/installer/MediaBridgeHelper-Setup-0.2.2.exe`. It installs per-user,
-registers the native host for Chrome, Edge, and Firefox, and appears in Windows
-Installed Apps for normal removal. Public releases must be code-signed.
+`dist/installer/MediaBridgeHelper-Setup-<version>.exe`. It installs per-user,
+registers the native host for Firefox, and appears in Windows Installed Apps for
+normal removal. Public releases must be code-signed. Omit `-FirefoxOnly` and
+provide the published Chromium extension ID when building a later Edge release.
 
 ## Build the browser store packages
 

@@ -78,6 +78,31 @@ class ExtensionReleaseTests(unittest.TestCase):
         self.assertIn("allowed_extensions", firefox)
         self.assertNotIn("allowed_origins", firefox)
 
+    def test_installer_supports_a_firefox_only_release(self):
+        build_script = (PROJECT_ROOT / "scripts" / "build-installer.ps1").read_text(
+            encoding="utf-8"
+        )
+        nsis_script = (PROJECT_ROOT / "installer" / "MediaBridgeHelper.nsi").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("[switch]$FirefoxOnly", build_script)
+        self.assertIn("/DMB_FIREFOX_ONLY=1", build_script)
+        self.assertIn("!ifndef MB_FIREFOX_ONLY", nsis_script)
+        self.assertIn("/DAPP_VERSION=$version", build_script)
+
+    def test_github_pages_preview_is_safe_before_helper_signing(self):
+        workflow = (PROJECT_ROOT / ".github" / "workflows" / "pages.yml").read_text(
+            encoding="utf-8"
+        )
+        builder = (PROJECT_ROOT / "scripts" / "build-pages-preview.ps1").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("actions/deploy-pages@v4", workflow)
+        self.assertIn("build-pages-preview.ps1", workflow)
+        self.assertIn("The signed public Helper is being prepared", builder)
+        self.assertNotIn("Copy-Item -LiteralPath $InstallerPath", builder)
+        self.assertIn("https://github.com/cell-beep/media-bridge/releases", builder)
+
     def test_extension_icons_have_declared_dimensions(self):
         for size in (16, 32, 48, 128):
             with Image.open(EXTENSION_DIR / "assets" / f"icon-{size}.png") as image:

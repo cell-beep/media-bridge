@@ -1,0 +1,20 @@
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+     License, v. 2.0. If a copy of the MPL was not distributed with this
+     file, You can obtain one at https://mozilla.org/MPL/2.0/. -->
+
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Media Bridge code-signing policy</title><link rel="stylesheet" href="styles.css"></head>
+<body>
+  <header><nav class="wrap"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Media Bridge</a><a href="download.html">Helper</a><a href="privacy.html">Privacy</a><a href="support.html">Support</a></nav></header>
+  <main class="wrap document">
+    <div class="eyebrow">Release integrity</div><h1>Code-signing policy</h1>
+    <section><h2>Current status</h2><p>Media Bridge is preparing an application for the SignPath Foundation open-source program. The current development installer is unsigned and is not offered here as a public production release.</p><p>After acceptance, signed release pages will state: <strong>Free code signing provided by <a href="https://signpath.io/">SignPath.io</a>, certificate by <a href="https://signpath.org/">SignPath Foundation</a>.</strong> Acceptance is not assumed or guaranteed.</p></section>
+    <section><h2>Covered artifacts</h2><p>Signing is limited to Media Bridge release artifacts built from tagged revisions of the public repository by the documented automated build. Private or locally modified binaries are not eligible.</p></section>
+    <section><h2>Roles</h2><ul><li><strong>Committer and reviewer:</strong> <a href="https://github.com/cell-beep">cell-beep</a>.</li><li><strong>Approver:</strong> cell-beep, acting for Soft Harbor Studio with multi-factor authentication enabled.</li></ul><p>Every production signing request requires manual approval.</p></section>
+    <section><h2>Release requirements</h2><ol><li>Automated tests and extension lint must pass.</li><li>Dependency versions, notices, required source, checksums, and an SBOM must accompany the release.</li><li>The installer must originate from a tagged public commit and pass clean-machine testing.</li><li>Signing keys and credentials must never be stored in the source repository.</li></ol></section>
+    <section><h2>Privacy statement</h2><p>Media Bridge will not transfer information to other networked systems unless specifically requested by the user operating it. A download request connects the local Helper to the media URL selected by the user. Media is not uploaded to a Media Bridge cloud service. See the <a href="privacy.html">privacy policy</a>.</p></section>
+  </main>
+  <footer><div class="wrap">© 2026 Soft Harbor Studio · <a href="https://github.com/cell-beep/media-bridge/blob/main/CODE_SIGNING_POLICY.md">Repository policy</a> · <a href="privacy.html">Privacy</a></div></footer>
+</body>
+</html>

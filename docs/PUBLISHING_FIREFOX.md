@@ -64,11 +64,11 @@ content, accounts, or payments.
 
 ## 5. Prepare the Helper
 
-Build the installer with the same permanent Firefox ID:
+Build the first public installer with only the permanent Firefox ID registered:
 
 ```powershell
-./scripts/build-helper.ps1 -Clean
-./scripts/build-installer.ps1
+./scripts/build-helper.ps1
+./scripts/build-installer.ps1 -FirefoxOnly
 ```
 
 Before public release, code-sign and timestamp the Helper and installer, host

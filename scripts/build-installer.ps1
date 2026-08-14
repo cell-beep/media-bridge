@@ -4,11 +4,12 @@
 
 param(
     [string]$ExtensionId = "kjeliceonffdcojomilebhoipjbkbohh",
-    [string]$FirefoxExtensionId = "{d6c3a4cc-8b7b-4f97-a669-7f41c39a6ac8}"
+    [string]$FirefoxExtensionId = "{d6c3a4cc-8b7b-4f97-a669-7f41c39a6ac8}",
+    [switch]$FirefoxOnly
 )
 
 $ErrorActionPreference = "Stop"
-if ($ExtensionId -notmatch "^[a-p]{32}$") {
+if (-not $FirefoxOnly -and $ExtensionId -notmatch "^[a-p]{32}$") {
     throw "ExtensionId must be a 32-character Chromium extension id."
 }
 if ($FirefoxExtensionId -notmatch '^\{[0-9a-fA-F-]{36}\}$|^[A-Za-z0-9._@-]+$') {
@@ -16,6 +17,8 @@ if ($FirefoxExtensionId -notmatch '^\{[0-9a-fA-F-]{36}\}$|^[A-Za-z0-9._@-]+$') {
 }
 
 $projectRoot = Split-Path -Parent $PSScriptRoot
+$manifest = Get-Content -LiteralPath (Join-Path $projectRoot "extension\manifest.json") -Raw -Encoding utf8 | ConvertFrom-Json
+$version = [string]$manifest.version
 $compilerCandidates = @(
     (Join-Path $projectRoot ".tools\nsis\nsis-3.12\makensis.exe"),
     "C:\Program Files (x86)\NSIS\makensis.exe",
@@ -34,13 +37,18 @@ if (-not (Test-Path -LiteralPath $helper)) {
 $buildDir = Join-Path $projectRoot ".build\installer"
 $outputDir = Join-Path $projectRoot "dist\installer"
 New-Item -ItemType Directory -Force -Path $buildDir, $outputDir | Out-Null
-
-$chromiumTemplatePath = Join-Path $projectRoot "installer\native-host\chromium-host.template.json"
 $chromiumManifestPath = Join-Path $buildDir "com.media_bridge.helper.chromium.json"
-$chromiumManifest = Get-Content -LiteralPath $chromiumTemplatePath -Raw
-$chromiumManifest = $chromiumManifest.Replace("__HELPER_PATH__", "MediaBridgeHelper.exe")
-$chromiumManifest = $chromiumManifest.Replace("__EXTENSION_ID__", $ExtensionId)
-[System.IO.File]::WriteAllText($chromiumManifestPath, $chromiumManifest, [System.Text.UTF8Encoding]::new($false))
+
+if (-not $FirefoxOnly) {
+    $chromiumTemplatePath = Join-Path $projectRoot "installer\native-host\chromium-host.template.json"
+    $chromiumManifest = Get-Content -LiteralPath $chromiumTemplatePath -Raw
+    $chromiumManifest = $chromiumManifest.Replace("__HELPER_PATH__", "MediaBridgeHelper.exe")
+    $chromiumManifest = $chromiumManifest.Replace("__EXTENSION_ID__", $ExtensionId)
+    [System.IO.File]::WriteAllText($chromiumManifestPath, $chromiumManifest, [System.Text.UTF8Encoding]::new($false))
+}
+elseif (Test-Path -LiteralPath $chromiumManifestPath) {
+    Remove-Item -LiteralPath $chromiumManifestPath -Force
+}
 
 $firefoxTemplatePath = Join-Path $projectRoot "installer\native-host\firefox-host.template.json"
 $firefoxManifestPath = Join-Path $buildDir "com.media_bridge.helper.firefox.json"
@@ -52,7 +60,12 @@ $firefoxManifest = $firefoxManifest.Replace("__EXTENSION_ID__", $FirefoxExtensio
 $script = Join-Path $projectRoot "installer\MediaBridgeHelper.nsi"
 Push-Location (Split-Path -Parent $script)
 try {
-    & $compiler $script
+    $compilerArguments = @("/DAPP_VERSION=$version")
+    if ($FirefoxOnly) {
+        $compilerArguments += "/DMB_FIREFOX_ONLY=1"
+    }
+    $compilerArguments += $script
+    & $compiler @compilerArguments
     if ($LASTEXITCODE -ne 0) {
         throw "NSIS failed with exit code $LASTEXITCODE."
     }

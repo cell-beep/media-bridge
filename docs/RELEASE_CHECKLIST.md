@@ -23,7 +23,8 @@
 - [x] Per-user installer and standard uninstaller.
 - [x] Bundled FFmpeg, Deno, yt-dlp, and EJS components.
 - [x] Detached downloads with persisted progress state.
-- [ ] Rebuild the Native Messaging manifest for the production Edge extension ID.
+- [x] First public release scoped to Firefox; Edge follows after its production ID is known.
+- [x] Firefox-only installer mode avoids registering a temporary Chromium extension ID.
 - [ ] Digitally sign and timestamp binaries and installer.
 - [ ] Publish a stable HTTPS download page and SHA-256 hash.
 - [ ] Test install, upgrade, and uninstall on a clean Windows user.

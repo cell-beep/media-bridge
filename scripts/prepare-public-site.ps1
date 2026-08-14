@@ -50,11 +50,30 @@ $publicInstaller = Join-Path $fileRoot $installerName
 Copy-Item -LiteralPath $InstallerPath -Destination $publicInstaller -Force
 $installerHash = (Get-FileHash -LiteralPath $publicInstaller -Algorithm SHA256).Hash
 
+$productActions = @"
+<a class="button" href="$EdgeStoreUrl">Get the Edge extension</a><a class="button secondary" href="download.html">Install the Windows Helper</a>
+"@
+$helperDownloadBlock = @"
+<div class="notice"><p>Version $version · Windows 10 or later · $(if ($signature.Status -eq 'Valid') { 'Digitally signed by Soft Harbor Studio' } else { 'Unsigned preview—not for public distribution' })</p></div>
+<p><a class="button" href="files/$installerName">Download Helper</a></p>
+<section><h2>Verify the download</h2><p>SHA-256:</p><p><code>$installerHash</code></p></section>
+"@
+$ffmpegSourceBlock = @"
+<section><h2>FFmpeg corresponding source</h2><p>The exact corresponding-source package for the FFmpeg binaries distributed with Helper $version is available here:</p><p><a href="source/ffmpeg-corresponding-source.zip">Download FFmpeg corresponding source</a></p><p>Build identification and checksums are included with the archive. Questions may be sent to <a href="mailto:$SupportEmail">$SupportEmail</a>.</p></section>
+"@
+
 Copy-Item -LiteralPath (Join-Path $projectRoot "docs\THIRD_PARTY_NOTICES.md") -Destination (Join-Path $legalRoot "THIRD-PARTY-NOTICES.md") -Force
 $helperLicenseRoot = Join-Path $projectRoot "dist\helper\MediaBridgeHelper\licenses"
 if (Test-Path -LiteralPath $helperLicenseRoot) {
     Copy-Item -LiteralPath $helperLicenseRoot -Destination $legalRoot -Recurse -Force
     Compress-Archive -Path (Join-Path $helperLicenseRoot '*') -DestinationPath (Join-Path $legalRoot 'media-bridge-licenses.zip') -CompressionLevel Optimal
+    $licenseArchiveBlock = '<p><a href="legal/media-bridge-licenses.zip">Packaged license texts</a></p>'
+}
+elseif ($AllowUnsignedPreview) {
+    $licenseArchiveBlock = '<p>The complete packaged license archive is not included in this preview.</p>'
+}
+else {
+    throw "The packaged Helper license directory is required for a public build."
 }
 if ($FfmpegSourceArchive -and (Test-Path -LiteralPath $FfmpegSourceArchive -PathType Leaf)) {
     Copy-Item -LiteralPath $FfmpegSourceArchive -Destination (Join-Path $sourceRoot "ffmpeg-corresponding-source.zip") -Force
@@ -63,9 +82,10 @@ if ($FfmpegSourceArchive -and (Test-Path -LiteralPath $FfmpegSourceArchive -Path
 $replacements = @{
     '{{VERSION}}' = $version
     '{{SUPPORT_EMAIL}}' = $SupportEmail
-    '{{EDGE_STORE_URL}}' = $EdgeStoreUrl
-    '{{INSTALLER_SHA256}}' = $installerHash
-    '{{SIGNING_STATUS}}' = $(if ($signature.Status -eq 'Valid') { 'Digitally signed by Soft Harbor Studio' } else { 'Unsigned preview—not for public distribution' })
+    '{{PRODUCT_ACTIONS}}' = $productActions
+    '{{HELPER_DOWNLOAD_BLOCK}}' = $helperDownloadBlock
+    '{{FFMPEG_SOURCE_BLOCK}}' = $ffmpegSourceBlock
+    '{{LICENSE_ARCHIVE_BLOCK}}' = $licenseArchiveBlock
 }
 $textFiles = Get-ChildItem -LiteralPath $outputRoot -Recurse -File | Where-Object { $_.Extension -in '.html', '.txt', '.md' }
 $textFiles | ForEach-Object {
