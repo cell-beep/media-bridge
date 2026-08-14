@@ -208,6 +208,14 @@ class ExtensionReleaseTests(unittest.TestCase):
         self.assertIn("nested Helper", notes)
         self.assertNotIn("Microsoft Edge Manifest V3 extension", notes)
 
+    def test_github_publish_script_supports_annotated_release_tags(self):
+        publisher = (PROJECT_ROOT / "scripts" / "publish-first-github.ps1").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("[string]$Tag", publisher)
+        self.assertIn("@('tag', '-a', $Tag", publisher)
+        self.assertIn("@('push', 'origin', $Tag)", publisher)
+
 
 if __name__ == "__main__":
     unittest.main()

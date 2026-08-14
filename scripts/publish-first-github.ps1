@@ -5,7 +5,9 @@
 [CmdletBinding()]
 param(
     [string]$RepositoryUrl = 'https://github.com/cell-beep/media-bridge.git',
-    [string]$CommitMessage = 'Update Media Bridge'
+    [string]$CommitMessage = 'Update Media Bridge',
+    [string]$Tag,
+    [string]$TagMessage
 )
 
 $ErrorActionPreference = 'Stop'
@@ -53,5 +55,19 @@ if ($pending) {
 
 Invoke-RepositoryGit @('branch', '-M', 'main')
 Invoke-RepositoryGit @('push', '--set-upstream', 'origin', 'main')
+
+if ($Tag) {
+    if ($Tag -notmatch '^v\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$') {
+        throw "Release tag has an unexpected format: $Tag"
+    }
+    & git -c "safe.directory=$safeDirectory" -C $projectRoot show-ref --verify --quiet "refs/tags/$Tag"
+    if ($LASTEXITCODE -eq 0) {
+        throw "Release tag already exists: $Tag"
+    }
+    $effectiveTagMessage = if ($TagMessage) { $TagMessage } else { "Media Bridge $Tag" }
+    Invoke-RepositoryGit @('tag', '-a', $Tag, '-m', $effectiveTagMessage)
+    Invoke-RepositoryGit @('push', 'origin', $Tag)
+    Write-Host "Release tag $Tag was published." -ForegroundColor Green
+}
 
 Write-Host 'Media Bridge source was published successfully.' -ForegroundColor Green
