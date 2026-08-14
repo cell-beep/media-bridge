@@ -35,8 +35,7 @@ upload media to a Media Bridge cloud service.
 From a clean Windows checkout, the release build is created with:
 
 ```powershell
-./scripts/build-helper.ps1
-./scripts/build-installer.ps1 -FirefoxOnly
+./scripts/prepare-release.ps1 -Clean
 ```
 
 The final signing workflow must use a pinned source revision and record the
@@ -57,12 +56,12 @@ are accepted under MPL-2.0 as described in `CONTRIBUTING.md`.
 
 ## Prerequisites before applying
 
-- [ ] GitHub Pages deployment is live at the URLs above.
+- [x] GitHub Pages deployment is live at the URLs above.
 - [ ] At least one tagged source release and release notes are public.
 - [x] The permanent Firefox extension ID is fixed in the submitted manifest.
-- [ ] The exact corresponding source for the bundled GPL FFmpeg build is public.
+- [ ] Run the prepared FFmpeg source workflow and attach its archive to the release.
 - [ ] Complete third-party notices, license texts, versions, and hashes are in the release.
-- [ ] A release SBOM is generated and published.
+- [x] CycloneDX SBOM generation is part of the release scripts.
 - [ ] The clean-machine install, upgrade, uninstall, and download test matrix passes.
 - [ ] Two-factor authentication is enabled for every account with release authority.
 - [ ] The current SignPath Foundation eligibility and application requirements have been rechecked.
@@ -78,3 +77,19 @@ are accepted under MPL-2.0 as described in `CONTRIBUTING.md`.
 > can verify the publisher and avoid ambiguous warnings caused by an unsigned
 > executable. Source, build scripts, licensing information, security policy, and
 > release artifacts are publicly maintained in the project repository.
+
+## Settings supplied after acceptance
+
+The repository already contains `.github/workflows/signpath.yml`. After
+SignPath creates the project, add these repository variables:
+
+- `SIGNPATH_ENABLED=true`
+- `SIGNPATH_ORGANIZATION_ID`
+- `SIGNPATH_PROJECT_SLUG`
+- `SIGNPATH_SIGNING_POLICY_SLUG`
+- `SIGNPATH_HELPER_ARTIFACT_CONFIGURATION_SLUG`
+- `SIGNPATH_INSTALLER_ARTIFACT_CONFIGURATION_SLUG`
+
+Add `SIGNPATH_API_TOKEN` as an Actions secret. The two artifact configurations
+are intentional: the workflow signs `MediaBridgeHelper.exe` first, builds the
+NSIS installer around that signed executable, and then signs the installer.

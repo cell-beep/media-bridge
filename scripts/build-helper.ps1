@@ -66,6 +66,16 @@ try {
     Copy-Item -LiteralPath (Join-Path $projectRoot "LICENSE.txt") -Destination (Join-Path $helperRoot "LICENSE.txt") -Force
     Copy-Item -LiteralPath (Join-Path $projectRoot "docs\THIRD_PARTY_NOTICES.md") -Destination (Join-Path $helperRoot "THIRD-PARTY-NOTICES.md") -Force
 
+    $ffmpegLicenseRoot = Join-Path $projectRoot ".tools\ffmpeg\licenses"
+    $ffmpegMetadata = Join-Path $projectRoot ".tools\ffmpeg\build.json"
+    if (-not (Test-Path -LiteralPath $ffmpegLicenseRoot) -or -not (Test-Path -LiteralPath $ffmpegMetadata)) {
+        throw "Verified FFmpeg license files or build metadata are missing. Run scripts\setup-ffmpeg.ps1 -Force."
+    }
+    $packagedFfmpegLicenses = Join-Path $licenseRoot "ffmpeg"
+    New-Item -ItemType Directory -Force -Path $packagedFfmpegLicenses | Out-Null
+    Copy-Item -Path (Join-Path $ffmpegLicenseRoot "*") -Destination $packagedFfmpegLicenses -Recurse -Force
+    Copy-Item -LiteralPath $ffmpegMetadata -Destination (Join-Path $packagedFfmpegLicenses "build.json") -Force
+
     $sitePackages = Join-Path $buildEnvironment "Lib\site-packages"
     Get-ChildItem -LiteralPath $sitePackages -Directory -Filter "*.dist-info" | ForEach-Object {
         $packageLicenseDir = Join-Path $_.FullName "licenses"

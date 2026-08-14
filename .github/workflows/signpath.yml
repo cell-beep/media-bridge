@@ -1,0 +1,120 @@
+name: Sign Windows Helper with SignPath
+
+on:
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  sign:
+    if: ${{ vars.SIGNPATH_ENABLED == 'true' }}
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify SignPath configuration
+        shell: pwsh
+        env:
+          ORGANIZATION_ID: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          PROJECT_SLUG: ${{ vars.SIGNPATH_PROJECT_SLUG }}
+          SIGNING_POLICY_SLUG: ${{ vars.SIGNPATH_SIGNING_POLICY_SLUG }}
+          HELPER_CONFIGURATION: ${{ vars.SIGNPATH_HELPER_ARTIFACT_CONFIGURATION_SLUG }}
+          INSTALLER_CONFIGURATION: ${{ vars.SIGNPATH_INSTALLER_ARTIFACT_CONFIGURATION_SLUG }}
+          API_TOKEN: ${{ secrets.SIGNPATH_API_TOKEN }}
+        run: |
+          $required = 'ORGANIZATION_ID','PROJECT_SLUG','SIGNING_POLICY_SLUG','HELPER_CONFIGURATION','INSTALLER_CONFIGURATION','API_TOKEN'
+          $missing = $required | Where-Object { -not (Get-Item "env:$_" -ErrorAction SilentlyContinue).Value }
+          if ($missing) { throw "Missing SignPath settings: $($missing -join ', ')" }
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - name: Install NSIS
+        shell: pwsh
+        run: choco install nsis --yes --no-progress
+
+      - name: Prepare unsigned Helper
+        shell: pwsh
+        run: |
+          ./scripts/setup-ffmpeg.ps1
+          Push-Location backend
+          uv sync --locked
+          Pop-Location
+          ./scripts/build-extension.ps1 -Target All -Clean
+          ./scripts/build-helper.ps1 -Clean
+          Compress-Archive -Path dist/helper/MediaBridgeHelper/* -DestinationPath dist/helper/MediaBridgeHelper-unsigned.zip
+
+      - name: Upload unsigned Helper
+        id: upload-unsigned-helper
+        uses: actions/upload-artifact@v4
+        with:
+          name: MediaBridgeHelper-unsigned
+          path: dist/helper/MediaBridgeHelper-unsigned.zip
+          if-no-files-found: error
+
+      - name: Sign Helper executable
+        uses: signpath/github-action-submit-signing-request@v2
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG }}
+          signing-policy-slug: ${{ vars.SIGNPATH_SIGNING_POLICY_SLUG }}
+          artifact-configuration-slug: ${{ vars.SIGNPATH_HELPER_ARTIFACT_CONFIGURATION_SLUG }}
+          github-artifact-id: ${{ steps.upload-unsigned-helper.outputs.artifact-id }}
+          wait-for-completion: true
+          output-artifact-directory: signed-helper
+
+      - name: Install signed Helper into candidate
+        shell: pwsh
+        run: |
+          $signed = Get-ChildItem signed-helper -Filter MediaBridgeHelper.exe -File -Recurse | Select-Object -First 1
+          if (-not $signed) { throw 'SignPath did not return MediaBridgeHelper.exe.' }
+          $signature = Get-AuthenticodeSignature $signed.FullName
+          if ($signature.Status -ne 'Valid') { throw "Signed Helper validation failed: $($signature.Status)" }
+          Copy-Item $signed.FullName dist/helper/MediaBridgeHelper/MediaBridgeHelper.exe -Force
+          ./scripts/build-installer.ps1 -FirefoxOnly
+
+      - name: Upload unsigned installer
+        id: upload-unsigned-installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: MediaBridgeHelper-Setup-unsigned
+          path: dist/installer/MediaBridgeHelper-Setup-*.exe
+          if-no-files-found: error
+
+      - name: Sign installer
+        uses: signpath/github-action-submit-signing-request@v2
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG }}
+          signing-policy-slug: ${{ vars.SIGNPATH_SIGNING_POLICY_SLUG }}
+          artifact-configuration-slug: ${{ vars.SIGNPATH_INSTALLER_ARTIFACT_CONFIGURATION_SLUG }}
+          github-artifact-id: ${{ steps.upload-unsigned-installer.outputs.artifact-id }}
+          wait-for-completion: true
+          output-artifact-directory: signed-installer
+
+      - name: Verify and package signed candidate
+        shell: pwsh
+        run: |
+          $helper = 'dist/helper/MediaBridgeHelper/MediaBridgeHelper.exe'
+          $installer = (Get-ChildItem signed-installer -Filter 'MediaBridgeHelper-Setup-*.exe' -File -Recurse | Select-Object -First 1).FullName
+          if (-not $installer) { throw 'SignPath did not return the signed installer.' }
+          ./scripts/verify-signed-release.ps1 -HelperPath $helper -InstallerPath $installer
+          Copy-Item $installer dist/installer/ -Force
+          ./scripts/generate-release-metadata.ps1
+
+      - name: Upload signed release candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: MediaBridge-signed-release-candidate
+          path: |
+            dist/installer/MediaBridgeHelper-Setup-*.exe
+            dist/extension/MediaBridge-Firefox-*.zip
+            dist/release/*
+            docs/RELEASE_NOTES_0.2.2.md
+          if-no-files-found: error
+          retention-days: 30

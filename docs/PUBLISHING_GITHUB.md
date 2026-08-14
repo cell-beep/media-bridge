@@ -34,6 +34,12 @@ Attach these generated files to a tagged release instead of committing them:
 - SHA-256 checksum files;
 - the complete dependency license bundle;
 - any corresponding-source archive required by the bundled FFmpeg build.
+- the CycloneDX SBOM, release manifest, and `SHA256SUMS.txt`.
+
+Create the unsigned local candidate with `scripts/prepare-release.ps1`. After
+SignPath approval, `.github/workflows/signpath.yml` signs the inner Helper and
+then the outer installer. `.github/workflows/ffmpeg-source.yml` produces the
+large corresponding-source archive for the pinned BtbN build.
 
 The extension ZIP is submitted to browser stores. It may also be attached to a
 release for auditability, but the store remains the normal installation path.

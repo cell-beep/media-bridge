@@ -1,0 +1,4 @@
+interface:
+  display_name: "Release Browser Native Helper"
+  short_description: "Ship browser extensions with a signed local Helper"
+  default_prompt: "Use $release-browser-native-helper to prepare this browser extension and native Helper for a safe, reviewable public release."

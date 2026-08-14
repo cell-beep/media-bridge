@@ -59,11 +59,11 @@ uv sync
 uv run media-bridge
 ```
 
-The FFmpeg setup downloads the current Windows essentials build linked by the
-official FFmpeg download page, verifies its published SHA-256 checksum, and
-stores only the required executables under the ignored `.tools` folder. You can
-instead put FFmpeg on `PATH` or set `MEDIA_BRIDGE_FFMPEG_DIR` to its `bin`
-directory.
+The FFmpeg setup downloads the exact BtbN Windows GPL build pinned in
+`packaging/ffmpeg/build.json`, verifies its SHA-256 checksum, validates the
+reported version and GPL configuration, and stores only the required programs,
+license files, and build metadata under the ignored `.tools` folder. Pass
+`-ArchivePath` to use an already downloaded copy of that exact archive.
 
 Optional environment variables:
 
@@ -79,21 +79,20 @@ only a small portion of each stream instead of the complete media file.
 ## Build and install the Helper
 
 The end user does not need Python, `uv`, FFmpeg, or PowerShell. Create the
-packaged native host and standard Windows installer with:
+complete unsigned Firefox-first release candidate with:
 
 ```powershell
-cd backend
-uv sync
-cd ..
-./scripts/build-helper.ps1 -Clean
-./scripts/build-installer.ps1 -FirefoxOnly
+./scripts/prepare-release.ps1 -Clean
 ```
 
 The installer is created at
 `dist/installer/MediaBridgeHelper-Setup-<version>.exe`. It installs per-user,
 registers the native host for Firefox, and appears in Windows Installed Apps for
-normal removal. Public releases must be code-signed. Omit `-FirefoxOnly` and
-provide the published Chromium extension ID when building a later Edge release.
+normal removal. Public releases must have both the Helper executable and outer
+installer signed and timestamped. The SignPath workflow performs those two
+signing stages after the open-source application is approved. Omit
+`-FirefoxOnly` and provide the published Chromium extension ID when building a
+later Edge release.
 
 ## Build the browser store packages
 
@@ -169,10 +168,21 @@ while the file-level license still permits Media Bridge to be combined with
 separately licensed software. Third-party components retain their own
 licenses; see [third-party notices](docs/THIRD_PARTY_NOTICES.md).
 
+The bundled FFmpeg/FFprobe programs are separate GPL-licensed executables, not
+linked into the MPL-covered Helper. The exact binary, build scripts, source
+inputs, license notices, and hashes are tracked as release supply-chain
+artifacts.
+
 Contributions are welcome under the same license. Before opening a pull
 request, read [CONTRIBUTING.md](CONTRIBUTING.md). Security reports should follow
 [SECURITY.md](SECURITY.md), and release signing is documented in
 [CODE_SIGNING_POLICY.md](CODE_SIGNING_POLICY.md).
+
+The reusable
+[Release Browser Native Helper Codex skill](skills/release-browser-native-helper/SKILL.md)
+captures the architecture, licensing, signing, store-review, and release
+pitfalls learned while building this project so other open-source extensions
+can reuse the workflow.
 
 ## Planned next steps
 
@@ -201,3 +211,4 @@ request, read [CONTRIBUTING.md](CONTRIBUTING.md). Security reports should follow
 - [Code-signing policy](CODE_SIGNING_POLICY.md)
 - [Trademark policy](TRADEMARKS.md)
 - [GitHub publishing guide](docs/PUBLISHING_GITHUB.md)
+- [Reusable release skill](skills/release-browser-native-helper/SKILL.md)

@@ -4,7 +4,7 @@
 
 - [x] Public publisher name: Soft Harbor Studio.
 - [x] First-party code licensed under MPL-2.0; third-party licenses remain in force.
-- [ ] Choose the product domain and durable support email.
+- [x] Product site and support email selected for the first release.
 - [ ] Decide which countries and languages are included in the first release.
 
 ## Extension
@@ -34,20 +34,20 @@
 - [x] Draft privacy policy.
 - [x] Draft support and uninstall instructions.
 - [x] Draft Partner Center permission justifications and remote-code declaration.
-- [ ] Publish privacy and support pages at stable HTTPS URLs.
-- [ ] Add the real support contact to every document and listing.
+- [x] Publish privacy and support pages at stable HTTPS URLs.
+- [x] Add the real support contact to every document and listing.
 - [ ] Re-review disclosures immediately before submission.
 
 ## Licensing and supply chain
 
 - [x] Include the full MPL-2.0 text and first-party license notice.
-- [ ] Publish the public source repository and replace code-signing policy placeholders.
+- [x] Publish the public source repository and replace code-signing policy placeholders.
 - [ ] Obtain free open-source signing approval or another trusted signing certificate.
 - [ ] Complete third-party license inventory for every bundled binary and Python package.
 - [ ] Include full required license texts in the installer and installed folder.
-- [ ] Provide the required corresponding-source information for the bundled GPLv3 FFmpeg build, or replace it with a deliberately selected compatible build.
-- [ ] Record versions and SHA-256 hashes for FFmpeg, Deno, yt-dlp, EJS, and build tools.
-- [ ] Generate an SBOM for the release artifacts.
+- [x] Pin a reproducible BtbN GPL FFmpeg build and automate its corresponding-source bundle.
+- [x] Automate version and SHA-256 recording for release artifacts and FFmpeg.
+- [x] Generate a CycloneDX SBOM for the locked Python environment.
 - [ ] Decide whether automatic component updates are allowed; never download executable code into the extension.
 
 ## Product QA
@@ -63,7 +63,7 @@
 
 ## Release artifacts
 
-- [ ] `MediaBridge-Edge-<version>.zip`
+- [x] `MediaBridge-Firefox-<version>.zip`
 - [ ] signed `MediaBridgeHelper-Setup-<version>.exe`
 - [ ] store images and screenshots
 - [ ] public privacy, support, and Helper download URLs

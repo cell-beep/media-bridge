@@ -1,0 +1,60 @@
+name: FFmpeg source bundle
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Media Bridge metadata
+        uses: actions/checkout@v4
+
+      - name: Read pinned FFmpeg build
+        id: metadata
+        shell: pwsh
+        run: |
+          $metadata = Get-Content packaging/ffmpeg/build.json -Raw | ConvertFrom-Json
+          "provider_commit=$($metadata.providerCommit)" >> $env:GITHUB_OUTPUT
+          "ffmpeg_commit=$(([regex]::Match($metadata.ffmpegVersion, 'g([0-9a-f]+)$')).Groups[1].Value)" >> $env:GITHUB_OUTPUT
+          "version=$($metadata.ffmpegVersion)" >> $env:GITHUB_OUTPUT
+
+      - name: Check out exact BtbN build scripts
+        uses: actions/checkout@v4
+        with:
+          repository: BtbN/FFmpeg-Builds
+          ref: ${{ steps.metadata.outputs.provider_commit }}
+          path: source/BtbN-FFmpeg-Builds
+
+      - name: Download build dependency sources
+        working-directory: source/BtbN-FFmpeg-Builds
+        run: ./download.sh
+
+      - name: Check out exact FFmpeg source
+        shell: bash
+        run: |
+          git clone --filter=blob:none https://github.com/FFmpeg/FFmpeg.git source/FFmpeg
+          git -C source/FFmpeg checkout "${{ steps.metadata.outputs.ffmpeg_commit }}"
+          git -C source/FFmpeg rev-parse HEAD > source/FFMPEG-COMMIT.txt
+          rm -rf source/FFmpeg/.git source/BtbN-FFmpeg-Builds/.git
+          cp packaging/ffmpeg/build.json source/Media-Bridge-FFmpeg-build.json
+
+      - name: Create corresponding-source archive
+        shell: bash
+        run: |
+          archive="ffmpeg-${{ steps.metadata.outputs.version }}-corresponding-source.tar.zst"
+          tar --zstd -cf "$archive" source
+          sha256sum "$archive" > "$archive.sha256"
+
+      - name: Upload corresponding source
+        uses: actions/upload-artifact@v4
+        with:
+          name: ffmpeg-corresponding-source
+          path: |
+            ffmpeg-*-corresponding-source.tar.zst
+            ffmpeg-*-corresponding-source.tar.zst.sha256
+          if-no-files-found: error
+          retention-days: 90

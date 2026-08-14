@@ -1,0 +1,15 @@
+{
+  "provider": "BtbN/FFmpeg-Builds",
+  "providerRepository": "https://github.com/BtbN/FFmpeg-Builds",
+  "providerCommit": "590a6612d7d961e9258429e501619e0b7d7cbedf",
+  "releaseTag": "autobuild-2026-08-14-13-16",
+  "ffmpegVersion": "n8.1.2-40-g852b0552f0",
+  "target": "win64",
+  "variant": "gpl-8.1",
+  "assetName": "ffmpeg-n8.1.2-40-g852b0552f0-win64-gpl-8.1.zip",
+  "assetUrl": "https://github.com/BtbN/FFmpeg-Builds/releases/download/autobuild-2026-08-14-13-16/ffmpeg-n8.1.2-40-g852b0552f0-win64-gpl-8.1.zip",
+  "assetSha256": "4dc80a665fd8a3481acae3f7836807334396a607581f7123b35a71f2ebaacb5d",
+  "buildSourceUrl": "https://github.com/BtbN/FFmpeg-Builds/tree/590a6612d7d961e9258429e501619e0b7d7cbedf",
+  "license": "GPL-3.0-or-later",
+  "selectionReason": "The GPL build provides broad codec support. FFmpeg and FFprobe are invoked as separate programs; Media Bridge first-party source remains MPL-2.0."
+}

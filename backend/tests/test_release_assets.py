@@ -15,6 +15,7 @@ from PIL import Image
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 EXTENSION_DIR = PROJECT_ROOT / "extension"
 FIREFOX_MANIFEST = PROJECT_ROOT / "packaging" / "firefox" / "manifest.json"
+FFMPEG_BUILD = PROJECT_ROOT / "packaging" / "ffmpeg" / "build.json"
 
 
 class ExtensionReleaseTests(unittest.TestCase):
@@ -146,6 +147,58 @@ class ExtensionReleaseTests(unittest.TestCase):
             self.assertIn("LICENSE", names)
             self.assertIn("LICENSE.txt", names)
             self.assertTrue(all("\\" not in name for name in names))
+
+    def test_ffmpeg_build_is_pinned_and_verified(self):
+        metadata = json.loads(FFMPEG_BUILD.read_text(encoding="utf-8"))
+        setup_script = (PROJECT_ROOT / "scripts" / "setup-ffmpeg.ps1").read_text(
+            encoding="utf-8"
+        )
+        self.assertEqual(metadata["provider"], "BtbN/FFmpeg-Builds")
+        self.assertIn("win64-gpl-8.1.zip", metadata["assetName"])
+        self.assertEqual(len(metadata["providerCommit"]), 40)
+        self.assertEqual(len(metadata["assetSha256"]), 64)
+        int(metadata["assetSha256"], 16)
+        self.assertIn("Get-FileHash", setup_script)
+        self.assertIn("--enable-gpl", setup_script)
+
+    def test_release_automation_preserves_nested_signatures_and_sources(self):
+        signing = (PROJECT_ROOT / ".github" / "workflows" / "signpath.yml").read_text(
+            encoding="utf-8"
+        )
+        sources = (PROJECT_ROOT / ".github" / "workflows" / "ffmpeg-source.yml").read_text(
+            encoding="utf-8"
+        )
+        self.assertEqual(signing.count("signpath/github-action-submit-signing-request@v2"), 2)
+        self.assertIn("SIGNPATH_HELPER_ARTIFACT_CONFIGURATION_SLUG", signing)
+        self.assertIn("SIGNPATH_INSTALLER_ARTIFACT_CONFIGURATION_SLUG", signing)
+        self.assertIn("verify-signed-release.ps1", signing)
+        self.assertIn("dist/installer/MediaBridgeHelper-Setup-*.exe", signing)
+        self.assertIn("./download.sh", sources)
+        self.assertIn("corresponding-source.tar.zst", sources)
+
+        readiness = (PROJECT_ROOT / "scripts" / "test-release-readiness.ps1").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("[ValidateSet('Firefox', 'Edge')][string]$Browser = 'Firefox'", readiness)
+        self.assertIn("$helperSignature.TimeStamperCertificate", readiness)
+
+    def test_firefox_listing_contains_public_release_links_without_placeholders(self):
+        listing = (PROJECT_ROOT / "docs" / "STORE_LISTING_FIREFOX.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertNotIn("[REQUIRED:", listing)
+        self.assertIn("https://cell-beep.github.io/media-bridge/", listing)
+        self.assertIn("https://github.com/cell-beep/media-bridge", listing)
+
+    def test_reusable_release_skill_is_complete(self):
+        skill_root = PROJECT_ROOT / "skills" / "release-browser-native-helper"
+        skill = (skill_root / "SKILL.md").read_text(encoding="utf-8")
+        self.assertTrue(skill.startswith("---\nname: release-browser-native-helper\n"))
+        self.assertNotIn("TODO", skill)
+        self.assertIn("Native Messaging", skill)
+        self.assertIn("Submit the Helper executable for Authenticode signing", skill)
+        for filename in ("release-gates.md", "pitfalls.md", "store-review.md"):
+            self.assertTrue((skill_root / "references" / filename).is_file())
 
 
 if __name__ == "__main__":

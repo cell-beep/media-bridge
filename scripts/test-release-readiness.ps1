@@ -4,6 +4,7 @@
 
 [CmdletBinding()]
 param(
+    [ValidateSet('Firefox', 'Edge')][string]$Browser = 'Firefox',
     [string]$ProductionExtensionId,
     [string]$SupportEmail,
     [string]$PublicSiteUrl
@@ -38,12 +39,18 @@ Check (Test-Path -LiteralPath $installerPath -PathType Leaf) "Helper installer e
 if (Test-Path -LiteralPath $installerPath -PathType Leaf) {
     $signature = Get-AuthenticodeSignature -LiteralPath $installerPath
     Check ($signature.Status -eq 'Valid') "Installer signature valid" "Sign and timestamp the Helper installer (current status: $($signature.Status))."
+    Check ($null -ne $signature.TimeStamperCertificate) "Installer timestamp present" "Timestamp the Helper installer signature."
 }
 
-$productionIdValid = $ProductionExtensionId -match '^[a-p]{32}$'
-Check $productionIdValid "Production extension ID supplied" "Supply the 32-character Microsoft Catalog extension ID."
-if ($productionIdValid) {
-    Check ($ProductionExtensionId -ne 'kjeliceonffdcojomilebhoipjbkbohh') "Production ID is not the unpacked ID" "Do not release a Helper restricted only to the unpacked development extension ID."
+if ($Browser -eq 'Edge') {
+    $productionIdValid = $ProductionExtensionId -match '^[a-p]{32}$'
+    Check $productionIdValid "Production Edge extension ID supplied" "Supply the 32-character Microsoft Catalog extension ID."
+    if ($productionIdValid) {
+        Check ($ProductionExtensionId -ne 'kjeliceonffdcojomilebhoipjbkbohh') "Production ID is not the unpacked ID" "Do not release a Helper restricted only to the unpacked development extension ID."
+    }
+}
+else {
+    Check ($firefoxManifest.browser_specific_settings.gecko.id -eq '{d6c3a4cc-8b7b-4f97-a669-7f41c39a6ac8}') "Production Firefox extension ID fixed" "Use the permanent Firefox extension ID."
 }
 Check ($SupportEmail -match '^[^@\s]+@[^@\s]+\.[^@\s]+$' -and $SupportEmail -notmatch '\.example$') "Dedicated support email supplied" "Supply the real dedicated support email."
 Check ($PublicSiteUrl -match '^https://[^\s]+$' -and $PublicSiteUrl -notmatch 'example\.') "Public HTTPS site supplied" "Supply the real public HTTPS product URL."
@@ -51,9 +58,18 @@ Check ($PublicSiteUrl -match '^https://[^\s]+$' -and $PublicSiteUrl -notmatch 'e
 $siteRoot = Join-Path $projectRoot 'dist\site'
 Check (Test-Path -LiteralPath (Join-Path $siteRoot 'privacy.html')) "Privacy page built" "Build the public privacy page."
 Check (Test-Path -LiteralPath (Join-Path $siteRoot 'support.html')) "Support page built" "Build the public support page."
-Check (Test-Path -LiteralPath (Join-Path $siteRoot 'source\ffmpeg-corresponding-source.zip')) "FFmpeg source published with site" "Provide exact FFmpeg corresponding source or replace the FFmpeg distribution strategy."
+$sourceBundlePresent = (Test-Path -LiteralPath (Join-Path $siteRoot 'source\ffmpeg-corresponding-source.zip')) -or
+    (Test-Path -LiteralPath (Join-Path $siteRoot 'source\ffmpeg-corresponding-source.tar.zst'))
+Check $sourceBundlePresent "FFmpeg source published with site" "Provide the exact FFmpeg corresponding-source archive."
 
 $helperRoot = Join-Path $projectRoot 'dist\helper\MediaBridgeHelper'
+$helperExecutable = Join-Path $helperRoot 'MediaBridgeHelper.exe'
+Check (Test-Path -LiteralPath $helperExecutable -PathType Leaf) "Helper executable exists" "Build the Helper executable."
+if (Test-Path -LiteralPath $helperExecutable -PathType Leaf) {
+    $helperSignature = Get-AuthenticodeSignature -LiteralPath $helperExecutable
+    Check ($helperSignature.Status -eq 'Valid') "Helper signature valid" "Sign the nested Helper executable before building the installer (current status: $($helperSignature.Status))."
+    Check ($null -ne $helperSignature.TimeStamperCertificate) "Helper timestamp present" "Timestamp the nested Helper executable signature."
+}
 Check (Test-Path -LiteralPath (Join-Path $helperRoot 'LICENSE')) "Full MPL-2.0 license included" "Rebuild Helper so the full LICENSE is installed."
 Check (Test-Path -LiteralPath (Join-Path $helperRoot 'LICENSE.txt')) "First-party Helper license notice included" "Rebuild Helper so LICENSE.txt is installed."
 Check (Test-Path -LiteralPath (Join-Path $helperRoot 'THIRD-PARTY-NOTICES.md')) "Third-party notices included" "Rebuild Helper so third-party notices are installed."

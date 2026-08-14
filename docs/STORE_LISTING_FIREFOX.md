@@ -46,6 +46,10 @@ The free Media Bridge Helper for Windows performs local extraction, downloading,
 merging, and audio conversion. Users do not need Python, PowerShell, FFmpeg, or
 other developer tools. The Helper must be installed separately from the
 official Media Bridge website.
+The official Helper page is
+https://cell-beep.github.io/media-bridge/download.html. The Helper and
+extension are open source, and the release page publishes the installer
+checksum, third-party licenses, and FFmpeg source bundle.
 
 Media Bridge is designed as a calmer alternative to downloaders built around
 artificial limits and aggressive advertising.
@@ -76,9 +80,11 @@ extension sandbox.
 
 Testing procedure:
 
-1. Install the Helper from `[REQUIRED: PUBLIC HTTPS HELPER URL]`.
+1. Install the signed Helper from
+   `https://cell-beep.github.io/media-bridge/download.html`.
 2. Restart Firefox.
-3. Open `[REQUIRED: AUTHORIZED TEST MEDIA URL]`.
+3. Open
+   `https://cell-beep.github.io/media-bridge/media/media-bridge-review-sample.mp4`.
 4. Open Media Bridge and select **Inspect**.
 5. Confirm the rights-and-site-permission checkbox and select **Download**.
 6. The completed file appears in `%USERPROFILE%\Downloads\MediaBridge`.
@@ -90,7 +96,9 @@ or download playlists in this release.
 
 ## Required links
 
-- Product page: `[REQUIRED: HTTPS PRODUCT PAGE]`
-- Helper: `[REQUIRED: HTTPS SIGNED INSTALLER PAGE]`
-- Privacy policy: `[REQUIRED: PUBLIC PRIVACY URL]`
-- Support: `[REQUIRED: HTTPS SUPPORT PAGE OR DEDICATED EMAIL]`
+- Product page: `https://cell-beep.github.io/media-bridge/`
+- Source code: `https://github.com/cell-beep/media-bridge`
+- Helper: `https://cell-beep.github.io/media-bridge/download.html`
+- Privacy policy: `https://cell-beep.github.io/media-bridge/privacy.html`
+- Support: `https://cell-beep.github.io/media-bridge/support.html`
+- Third-party notices: `https://cell-beep.github.io/media-bridge/third-party.html`
