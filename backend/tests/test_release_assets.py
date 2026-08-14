@@ -110,7 +110,7 @@ class ExtensionReleaseTests(unittest.TestCase):
                 self.assertEqual(image.size, (size, size))
                 self.assertEqual(image.format, "PNG")
 
-    def test_store_artwork_has_edge_dimensions(self):
+    def test_store_artwork_has_declared_dimensions(self):
         expected = {
             "media-bridge-logo-300.png": (300, 300),
             "media-bridge-small-tile-440x280.png": (440, 280),
@@ -135,18 +135,17 @@ class ExtensionReleaseTests(unittest.TestCase):
         self.assertIn("MPL-2.0", license_text)
         self.assertIn("Soft Harbor Studio", license_text)
 
-    def test_built_extension_archives_use_portable_entry_names(self):
+    def test_built_firefox_archive_uses_portable_entry_names(self):
         version = json.loads((EXTENSION_DIR / "manifest.json").read_text(encoding="utf-8"))["version"]
-        for browser in ("Edge", "Firefox"):
-            archive_path = PROJECT_ROOT / "dist" / "extension" / f"MediaBridge-{browser}-{version}.zip"
-            if not archive_path.exists():
-                self.skipTest(f"Build archive first: {archive_path}")
-            with zipfile.ZipFile(archive_path) as archive:
-                names = archive.namelist()
-            self.assertIn("assets/icon-128.png", names)
-            self.assertIn("LICENSE", names)
-            self.assertIn("LICENSE.txt", names)
-            self.assertTrue(all("\\" not in name for name in names))
+        archive_path = PROJECT_ROOT / "dist" / "extension" / f"MediaBridge-Firefox-{version}.zip"
+        if not archive_path.exists():
+            self.skipTest(f"Build archive first: {archive_path}")
+        with zipfile.ZipFile(archive_path) as archive:
+            names = archive.namelist()
+        self.assertIn("assets/icon-128.png", names)
+        self.assertIn("LICENSE", names)
+        self.assertIn("LICENSE.txt", names)
+        self.assertTrue(all("\\" not in name for name in names))
 
     def test_ffmpeg_build_is_pinned_and_verified(self):
         metadata = json.loads(FFMPEG_BUILD.read_text(encoding="utf-8"))
@@ -173,6 +172,17 @@ class ExtensionReleaseTests(unittest.TestCase):
         self.assertIn("SIGNPATH_INSTALLER_ARTIFACT_CONFIGURATION_SLUG", signing)
         self.assertIn("verify-signed-release.ps1", signing)
         self.assertIn("dist/installer/MediaBridgeHelper-Setup-*.exe", signing)
+        self.assertIn("build-extension.ps1 -Target Firefox -Clean", signing)
+        self.assertNotIn("build-extension.ps1 -Target All", signing)
+        ci = (PROJECT_ROOT / ".github" / "workflows" / "ci.yml").read_text(
+            encoding="utf-8"
+        )
+        preparation = (PROJECT_ROOT / "scripts" / "prepare-release.ps1").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("build-extension.ps1 -Target Firefox -Clean", ci)
+        self.assertIn("build-extension.ps1') -Target Firefox", preparation)
+        self.assertNotIn("-Target All", preparation)
         self.assertIn("./download.sh", sources)
         self.assertIn("corresponding-source.tar.zst", sources)
 
@@ -207,6 +217,20 @@ class ExtensionReleaseTests(unittest.TestCase):
         self.assertIn("Firefox desktop Manifest V3", notes)
         self.assertIn("nested Helper", notes)
         self.assertNotIn("Microsoft Edge Manifest V3 extension", notes)
+
+    def test_public_identity_does_not_claim_incorporation(self):
+        readme = (PROJECT_ROOT / "README.md").read_text(encoding="utf-8")
+        application = (PROJECT_ROOT / "docs" / "SIGNPATH_APPLICATION.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("individual maintainer", readme)
+        self.assertIn("not a claim", readme)
+        self.assertIn("Maintainer type: individual", application)
+        self.assertIn("outside the current release", application)
+        privacy = (PROJECT_ROOT / "site-template" / "privacy.html").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("not a claim that a corporation", privacy)
 
     def test_github_publish_script_supports_annotated_release_tags(self):
         publisher = (PROJECT_ROOT / "scripts" / "publish-first-github.ps1").read_text(

@@ -7,7 +7,8 @@ claim and it must be reviewed immediately before submission.
 ## Project
 
 - Project name: Media Bridge
-- Publisher: Soft Harbor Studio
+- Publisher display name: Soft Harbor Studio
+- Maintainer type: individual; the publisher display name is not a claim of incorporation
 - Repository: https://github.com/cell-beep/media-bridge
 - License: Mozilla Public License 2.0 for first-party source code
 - Maintainer account: https://github.com/cell-beep
@@ -25,9 +26,9 @@ dependencies. The browser extension itself is separately reviewed and signed by
 the relevant browser store.
 
 The Helper accepts native-messaging requests only from the explicitly allowed
-browser extension IDs enabled for that release. The first public release is
-Firefox-only; Microsoft Edge support will be added after the production Edge ID
-is assigned. It downloads authorized media to the user's computer and does not
+browser extension IDs enabled for that release. The public release is
+Firefox-only; Microsoft Edge and Partner Center are outside the current release
+scope. It downloads authorized media to the user's computer and does not
 upload media to a Media Bridge cloud service.
 
 ## Reproducible build entry points

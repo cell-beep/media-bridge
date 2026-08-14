@@ -15,7 +15,8 @@ Official references:
 Sign in to AMO with the dedicated publisher Mozilla Account. Set the AMO
 developer display name to **Soft Harbor Studio** and use a durable support
 address. Keep two-factor authentication and recovery codes enabled for the
-publisher account.
+publisher account. This is the public project/publisher display name of the
+individual maintainer, not a claim of incorporation.
 
 ## 2. Build and validate the package
 

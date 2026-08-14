@@ -27,7 +27,7 @@ if (-not $SkipDependencySync) {
     finally { Pop-Location }
 }
 
-& (Join-Path $PSScriptRoot 'build-extension.ps1') -Target All -Clean:$Clean
+& (Join-Path $PSScriptRoot 'build-extension.ps1') -Target Firefox -Clean:$Clean
 & (Join-Path $PSScriptRoot 'build-helper.ps1') -Clean:$Clean
 & (Join-Path $PSScriptRoot 'build-installer.ps1') -FirefoxOnly
 & (Join-Path $PSScriptRoot 'generate-release-metadata.ps1')

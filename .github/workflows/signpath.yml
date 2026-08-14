@@ -43,7 +43,7 @@ jobs:
           Push-Location backend
           uv sync --locked
           Pop-Location
-          ./scripts/build-extension.ps1 -Target All -Clean
+          ./scripts/build-extension.ps1 -Target Firefox -Clean
           ./scripts/build-helper.ps1 -Clean
           Compress-Archive -Path dist/helper/MediaBridgeHelper/* -DestinationPath dist/helper/MediaBridgeHelper-unsigned.zip
 

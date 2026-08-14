@@ -2,7 +2,7 @@
 
 ## The short version
 
-Media Bridge is a local video and audio downloader for Microsoft Edge that does not impose artificial daily download quotas, paid waiting timers, or intrusive advertising on basic downloads.
+Media Bridge is a local video and audio downloader for Firefox desktop that does not impose artificial daily download quotas, paid waiting timers, or intrusive advertising on basic downloads.
 
 ## Local by default
 

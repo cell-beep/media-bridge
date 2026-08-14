@@ -37,7 +37,7 @@ jobs:
 
       - name: Build browser-extension packages
         shell: pwsh
-        run: ./scripts/build-extension.ps1 -Target All -Clean
+        run: ./scripts/build-extension.ps1 -Target Firefox -Clean
 
       - name: Lint Firefox package
         run: web-ext lint --source-dir .build/extension-package-firefox --warnings-as-errors

@@ -19,7 +19,7 @@ Release date: August 14, 2026
 
 ## Publication preparation
 
-- MPL-2.0 open-source license and Soft Harbor Studio publisher identity.
+- MPL-2.0 open-source license and Soft Harbor Studio project/publisher display name for the individual maintainer.
 - Collected Python-package license files included in new Helper builds.
 - Firefox Add-ons listing and reviewer instructions.
 - Static product, Helper download, privacy, support, and third-party notice pages.

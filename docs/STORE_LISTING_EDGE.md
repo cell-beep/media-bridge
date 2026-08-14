@@ -1,5 +1,7 @@
 # Microsoft Edge Add-ons Listing Copy
 
+> Paused future reference. Do not use this listing for the current Firefox-only release.
+
 ## Product name
 
 Media Bridge

@@ -1,5 +1,7 @@
 # Publishing Media Bridge at Microsoft Edge Add-ons
 
+> Paused future reference. Microsoft Edge and Partner Center are not part of the current Firefox-only release plan.
+
 This guide follows the current Microsoft Edge Add-ons workflow in Partner Center.
 
 Official references:

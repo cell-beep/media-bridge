@@ -5,7 +5,7 @@
 Media Bridge has a local data plane and an optional future cloud control plane.
 
 ```text
-Microsoft Edge popup
+Firefox popup
         │ Native Messaging
         ▼
 Media Bridge Helper
@@ -36,7 +36,7 @@ Media files do not pass through the future marketing service.
 - yt-dlp extracts metadata and media streams.
 - yt-dlp-ejs and bundled Deno solve current JavaScript challenges.
 - FFmpeg merges video/audio and performs audio conversion.
-- A detached worker owns each download so an Edge service-worker restart cannot cancel it.
+- A detached worker owns each download so a Firefox background restart cannot cancel it.
 - Public job state is persisted under `%LOCALAPPDATA%\Media Bridge\jobs`.
 - Output is saved under `%USERPROFILE%\Downloads\MediaBridge` by default.
 

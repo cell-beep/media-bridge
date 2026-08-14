@@ -1,5 +1,7 @@
 # Partner Center submission sheet — Media Bridge 0.2.2
 
+> Paused future reference. Partner Center is not part of the current Firefox-only release plan.
+
 This is the copy/paste sheet for the first Microsoft Edge Add-ons submission.
 Replace every `[REQUIRED: ...]` marker before selecting **Publish**.
 

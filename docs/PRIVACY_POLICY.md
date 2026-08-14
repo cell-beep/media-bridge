@@ -56,3 +56,5 @@ This policy will be updated when Media Bridge's data practices materially change
 ## Contact
 
 Privacy and support requests can be submitted through the dedicated Soft Harbor Studio support address published on the Media Bridge listing and product support page.
+
+Soft Harbor Studio is the public project and publisher display name used by the individual maintainer. It is not a claim that a corporation or other registered legal entity exists.

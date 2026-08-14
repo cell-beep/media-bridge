@@ -16,8 +16,7 @@ Public source: [github.com/cell-beep/media-bridge](https://github.com/cell-beep/
 
 ## Current MVP (0.2.2)
 
-- Supports Microsoft Edge/Chromium and Firefox 142 or later with separate,
-  store-ready manifests built from the same interface code.
+- Supports Firefox desktop 142 or later for the current public release.
 - Detects the URL in the active browser tab.
 - Reads media metadata before downloading.
 - Downloads a video up to a selected resolution, or extracts audio as MP3,
@@ -39,8 +38,7 @@ and the site permits downloading it.
 
 ## Development requirements
 
-- Windows with Microsoft Edge or Firefox 142 or later for the packaged Helper
-  integration tests.
+- Windows with Firefox 142 or later for the packaged Helper integration tests.
 - Python managed by `uv` for development and automated tests.
 - FFmpeg for merging separate video/audio streams and converting audio. It can
   be installed locally for this project with the setup command below. Some
@@ -90,9 +88,8 @@ The installer is created at
 registers the native host for Firefox, and appears in Windows Installed Apps for
 normal removal. Public releases must have both the Helper executable and outer
 installer signed and timestamped. The SignPath workflow performs those two
-signing stages after the open-source application is approved. Omit
-`-FirefoxOnly` and provide the published Chromium extension ID when building a
-later Edge release.
+signing stages after the open-source application is approved. Firefox-only
+installer registration is already selected by the release script.
 
 ## Build the browser store packages
 
@@ -104,12 +101,11 @@ cd backend
 uv sync
 cd ..
 ./scripts/build-assets.ps1
-./scripts/build-extension.ps1 -Target All -Clean
+./scripts/build-extension.ps1 -Target Firefox -Clean
 ```
 
-The Edge and Firefox packages are created under `dist/extension`. Store
-artwork is under `store-assets`. Use `-Target Edge` or `-Target Firefox` to
-build only one package.
+The Firefox package is created under `dist/extension`. Store artwork is under
+`store-assets`.
 
 For an unpacked development extension, the installer and native-host manifest
 must use that extension's 32-character ID. Pass it to `build-installer.ps1`, or
@@ -121,6 +117,12 @@ register a development build directly:
 
 The command also registers the fixed Firefox development ID declared in
 `packaging/firefox/manifest.json`.
+
+## Paused Chromium development path
+
+Chromium/Edge code remains in the repository for possible future work, but it
+is not part of the current release, signing application, store submission, or
+support promise.
 
 ## Load the Chromium development extension
 
@@ -178,6 +180,10 @@ request, read [CONTRIBUTING.md](CONTRIBUTING.md). Security reports should follow
 [SECURITY.md](SECURITY.md), and release signing is documented in
 [CODE_SIGNING_POLICY.md](CODE_SIGNING_POLICY.md).
 
+Soft Harbor Studio is the public project and publisher display name used by an
+individual maintainer. It is not a claim that a corporation or other registered
+legal entity exists.
+
 The reusable
 [Release Browser Native Helper Codex skill](skills/release-browser-native-helper/SKILL.md)
 captures the architecture, licensing, signing, store-review, and release
@@ -197,10 +203,8 @@ can reuse the workflow.
 
 - [Architecture](docs/ARCHITECTURE.md)
 - [Product principles](docs/PRODUCT_PRINCIPLES.md)
-- [Microsoft Edge publishing guide](docs/PUBLISHING_EDGE.md)
 - [Firefox Add-ons publishing guide](docs/PUBLISHING_FIREFOX.md)
 - [Firefox Add-ons listing copy](docs/STORE_LISTING_FIREFOX.md)
-- [Store listing copy](docs/STORE_LISTING_EDGE.md)
 - [Privacy policy draft](docs/PRIVACY_POLICY.md)
 - [Support guide](docs/SUPPORT.md)
 - [Release checklist](docs/RELEASE_CHECKLIST.md)

@@ -2,7 +2,7 @@
 
 ## Blocking decisions
 
-- [x] Public publisher name: Soft Harbor Studio.
+- [x] Public publisher display name: Soft Harbor Studio; maintained by an individual and not presented as an incorporated entity.
 - [x] First-party code licensed under MPL-2.0; third-party licenses remain in force.
 - [x] Product site and support email selected for the first release.
 - [ ] Decide which countries and languages are included in the first release.
@@ -16,14 +16,14 @@
 - [x] Store logo and promotional tiles.
 - [x] Test sponsor card disabled for the first review package.
 - [ ] Capture clean store screenshots at 1280×800.
-- [ ] Validate the final ZIP in Partner Center.
+- [ ] Validate the final ZIP in Firefox Add-ons and preserve the validation report.
 
 ## Helper
 
 - [x] Per-user installer and standard uninstaller.
 - [x] Bundled FFmpeg, Deno, yt-dlp, and EJS components.
 - [x] Detached downloads with persisted progress state.
-- [x] First public release scoped to Firefox; Edge follows after its production ID is known.
+- [x] Public release scoped to Firefox; Microsoft Edge is outside the current release plan.
 - [x] Firefox-only installer mode avoids registering a temporary Chromium extension ID.
 - [ ] Digitally sign and timestamp binaries and installer.
 - [ ] Publish a stable HTTPS download page and SHA-256 hash.
@@ -33,7 +33,7 @@
 
 - [x] Draft privacy policy.
 - [x] Draft support and uninstall instructions.
-- [x] Draft Partner Center permission justifications and remote-code declaration.
+- [x] Draft Firefox reviewer permission, data-collection, and remote-code declarations.
 - [x] Publish privacy and support pages at stable HTTPS URLs.
 - [x] Add the real support contact to every document and listing.
 - [ ] Re-review disclosures immediately before submission.
