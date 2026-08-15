@@ -104,6 +104,13 @@ class ExtensionReleaseTests(unittest.TestCase):
         self.assertNotIn("Copy-Item -LiteralPath $InstallerPath", builder)
         self.assertIn("https://github.com/cell-beep/media-bridge/releases", builder)
 
+        download_page = (PROJECT_ROOT / "site-template" / "download.html").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("SignPath Foundation", download_page)
+        self.assertIn("https://signpath.org/", download_page)
+        self.assertIn("Enrollment is currently pending", download_page)
+
     def test_extension_icons_have_declared_dimensions(self):
         for size in (16, 32, 48, 128):
             with Image.open(EXTENSION_DIR / "assets" / f"icon-{size}.png") as image:
