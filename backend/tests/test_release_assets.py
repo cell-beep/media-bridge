@@ -132,6 +132,15 @@ class ExtensionReleaseTests(unittest.TestCase):
         self.assertIn("SHA256SUMS.txt", packager)
         self.assertIn("FfmpegSourceArchive", packager)
 
+        publisher = (
+            PROJECT_ROOT / ".github" / "workflows" / "publish-unsigned-beta.yml"
+        ).read_text(encoding="utf-8")
+        self.assertIn("PUBLISH UNSIGNED BETA", publisher)
+        self.assertIn("contents: write", publisher)
+        self.assertIn("--prerelease", publisher)
+        self.assertIn("gh run download", publisher)
+        self.assertIn("prepare-beta-assets.ps1", publisher)
+
     def test_extension_icons_have_declared_dimensions(self):
         for size in (16, 32, 48, 128):
             with Image.open(EXTENSION_DIR / "assets" / f"icon-{size}.png") as image:

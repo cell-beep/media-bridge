@@ -1,0 +1,108 @@
+name: Publish unsigned Windows beta
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing annotated beta tag to publish
+        required: true
+        default: v0.2.2-beta.1
+      source_run_id:
+        description: Successful FFmpeg source-bundle workflow run ID
+        required: true
+        default: '31889950521'
+      confirmation:
+        description: Type PUBLISH UNSIGNED BETA to permit the public prerelease
+        required: true
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  publish:
+    runs-on: windows-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      REQUESTED_TAG: ${{ inputs.tag }}
+      SOURCE_RUN_ID: ${{ inputs.source_run_id }}
+      PUBLICATION_CONFIRMATION: ${{ inputs.confirmation }}
+    steps:
+      - name: Verify explicit publication request
+        shell: pwsh
+        run: |
+          if ($env:PUBLICATION_CONFIRMATION -cne 'PUBLISH UNSIGNED BETA') {
+            throw 'The exact unsigned-beta publication confirmation was not provided.'
+          }
+          if ($env:REQUESTED_TAG -notmatch '^v\d+\.\d+\.\d+-beta\.\d+$') {
+            throw 'Only an existing versioned beta tag can be published by this workflow.'
+          }
+          if ($env:SOURCE_RUN_ID -notmatch '^\d+$') {
+            throw 'The FFmpeg source workflow run ID must contain digits only.'
+          }
+
+      - name: Check out the exact beta tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag }}
+
+      - name: Verify tag and release do not drift
+        shell: pwsh
+        run: |
+          $tagCommit = (& git rev-list -n 1 $env:REQUESTED_TAG).Trim()
+          $headCommit = (& git rev-parse HEAD).Trim()
+          if ($tagCommit -ne $headCommit) { throw 'Checked-out source does not match the requested tag.' }
+          & gh release view $env:REQUESTED_TAG *> $null
+          if ($LASTEXITCODE -eq 0) { throw 'A GitHub release already exists for this tag.' }
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - name: Install NSIS
+        shell: pwsh
+        run: choco install nsis --yes --no-progress
+
+      - name: Build the unsigned Firefox beta
+        shell: pwsh
+        run: |
+          ./scripts/setup-ffmpeg.ps1
+          Push-Location backend
+          uv sync --locked
+          Pop-Location
+          ./scripts/build-extension.ps1 -Target Firefox -Clean
+          ./scripts/build-helper.ps1 -Clean
+          ./scripts/build-installer.ps1 -FirefoxOnly
+          ./scripts/generate-release-metadata.ps1
+
+      - name: Download exact corresponding source from the verified workflow
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path dist/source-download | Out-Null
+          & gh run download $env:SOURCE_RUN_ID --name ffmpeg-corresponding-source --dir dist/source-download
+          if ($LASTEXITCODE -ne 0) { throw 'Unable to download the corresponding-source artifact.' }
+          $source = Get-ChildItem dist/source-download -Filter '*.tar.zst' -File | Select-Object -First 1
+          $checksum = Get-ChildItem dist/source-download -Filter '*.tar.zst.sha256' -File | Select-Object -First 1
+          if (-not $source -or -not $checksum) { throw 'The source workflow artifact is incomplete.' }
+          $expected = ((Get-Content $checksum.FullName -Raw).Trim() -split '\s+')[0].ToLowerInvariant()
+          $actual = (Get-FileHash $source.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($actual -ne $expected) { throw 'The corresponding-source archive checksum does not match.' }
+          "source_path=$($source.FullName)" >> $env:GITHUB_OUTPUT
+        id: source
+
+      - name: Assemble and verify public beta assets
+        shell: pwsh
+        env:
+          SOURCE_ARCHIVE: ${{ steps.source.outputs.source_path }}
+        run: ./scripts/prepare-beta-assets.ps1 -FfmpegSourceArchive $env:SOURCE_ARCHIVE
+
+      - name: Publish GitHub prerelease
+        shell: pwsh
+        run: |
+          $manifest = Get-Content extension/manifest.json -Raw | ConvertFrom-Json
+          $assets = @(Get-ChildItem dist/beta-release -File | ForEach-Object FullName)
+          if (-not $assets) { throw 'No beta assets were produced.' }
+          & gh release create $env:REQUESTED_TAG --verify-tag --prerelease --title "Media Bridge $($manifest.version) beta 1" --notes-file docs/BETA_RELEASE_NOTES_0.2.2.md @assets
+          if ($LASTEXITCODE -ne 0) { throw 'GitHub prerelease publication failed.' }
