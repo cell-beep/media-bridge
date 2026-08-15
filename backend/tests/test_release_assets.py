@@ -103,6 +103,10 @@ class ExtensionReleaseTests(unittest.TestCase):
         self.assertIn("The signed public Helper is being prepared", builder)
         self.assertNotIn("Copy-Item -LiteralPath $InstallerPath", builder)
         self.assertIn("https://github.com/cell-beep/media-bridge/releases", builder)
+        self.assertIn("Unsigned beta for early testing", builder)
+        self.assertIn("Do not weaken Windows security settings", builder)
+        self.assertIn("installerSha256", builder)
+        self.assertIn("sourceSha256", builder)
 
         download_page = (PROJECT_ROOT / "site-template" / "download.html").read_text(
             encoding="utf-8"
@@ -110,6 +114,23 @@ class ExtensionReleaseTests(unittest.TestCase):
         self.assertIn("SignPath Foundation", download_page)
         self.assertIn("https://signpath.org/", download_page)
         self.assertIn("Enrollment is currently pending", download_page)
+
+    def test_unsigned_beta_notes_do_not_claim_a_signature(self):
+        notes = (PROJECT_ROOT / "docs" / "BETA_RELEASE_NOTES_0.2.2.md").read_text(
+            encoding="utf-8"
+        )
+        normalized_notes = " ".join(notes.split())
+        self.assertIn("is not Authenticode signed", notes)
+        self.assertIn("No current signature or approval is claimed", normalized_notes)
+        self.assertIn("corresponding-source archive", notes)
+
+        packager = (PROJECT_ROOT / "scripts" / "prepare-beta-assets.ps1").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("Get-AuthenticodeSignature", packager)
+        self.assertIn("UNSIGNED-BETA-WARNING.txt", packager)
+        self.assertIn("SHA256SUMS.txt", packager)
+        self.assertIn("FfmpegSourceArchive", packager)
 
     def test_extension_icons_have_declared_dimensions(self):
         for size in (16, 32, 48, 128):
@@ -198,6 +219,14 @@ class ExtensionReleaseTests(unittest.TestCase):
         )
         self.assertIn("[ValidateSet('Firefox', 'Edge')][string]$Browser = 'Firefox'", readiness)
         self.assertIn("$helperSignature.TimeStamperCertificate", readiness)
+
+        metadata = (PROJECT_ROOT / "scripts" / "generate-release-metadata.ps1").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("function Get-ProjectRelativePath", metadata)
+        self.assertNotIn("[System.IO.Path]::GetRelativePath", metadata)
+        self.assertIn('safe.directory=$projectRoot', metadata)
+        self.assertIn("Join-Path $projectRoot '.uv-cache'", metadata)
 
     def test_firefox_listing_contains_public_release_links_without_placeholders(self):
         listing = (PROJECT_ROOT / "docs" / "STORE_LISTING_FIREFOX.md").read_text(

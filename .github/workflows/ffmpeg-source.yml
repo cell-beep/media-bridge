@@ -31,7 +31,10 @@ jobs:
 
       - name: Download build dependency sources
         working-directory: source/BtbN-FFmpeg-Builds
-        run: ./download.sh
+        # download.sh derives its public GHCR base-image name from this
+        # variable. Override the calling workflow's repository so it pulls
+        # BtbN's published image instead of looking for a Media Bridge image.
+        run: GITHUB_REPOSITORY=BtbN/FFmpeg-Builds ./download.sh
 
       - name: Check out exact FFmpeg source
         shell: bash
