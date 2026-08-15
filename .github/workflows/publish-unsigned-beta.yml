@@ -46,6 +46,10 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ inputs.tag }}
+          # The guard below resolves the tag name again. A shallow checkout of
+          # a tag only leaves a detached commit and can omit the tag ref.
+          fetch-depth: 0
+          fetch-tags: true
 
       - name: Verify tag and release do not drift
         shell: pwsh
