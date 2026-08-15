@@ -57,8 +57,9 @@ jobs:
           $tagCommit = (& git rev-list -n 1 $env:REQUESTED_TAG).Trim()
           $headCommit = (& git rev-parse HEAD).Trim()
           if ($tagCommit -ne $headCommit) { throw 'Checked-out source does not match the requested tag.' }
-          & gh release view $env:REQUESTED_TAG *> $null
-          if ($LASTEXITCODE -eq 0) { throw 'A GitHub release already exists for this tag.' }
+          $existingRelease = (& gh release list --limit 100 --json tagName --jq ".[] | select(.tagName == `"$env:REQUESTED_TAG`") | .tagName").Trim()
+          if ($LASTEXITCODE -ne 0) { throw 'Unable to check whether the GitHub release already exists.' }
+          if ($existingRelease) { throw 'A GitHub release already exists for this tag.' }
 
       - name: Install uv
         uses: astral-sh/setup-uv@v6
